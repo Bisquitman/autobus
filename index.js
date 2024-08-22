@@ -1,0 +1,100 @@
+import 'dotenv/config';
+import express from 'express';
+import {readFile} from 'node:fs/promises';
+import path from 'node:path';
+import url from "node:url";
+import {DateTime} from 'luxon';
+
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const timeZone = "UTC";
+const PORT = process.env.PORT || 3000;
+
+const app = express();
+
+const loadBuses = async () => {
+  const data = await readFile(path.join(__dirname, 'buses.json'), {encoding: 'utf8'});
+  return JSON.parse(data);
+};
+
+const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
+  // now - текущее время в установленном часовом поясе (timeZone)
+  const now = DateTime.now().setZone(timeZone);
+  const [hours, minutes] = firstDepartureTime.split(':').map(Number);
+
+  // departure - время отправки автобуса, для начала - первое (взятое из firstDepartureTime)
+  let departure = DateTime
+    .now()
+    .set({hours: hours, minutes: minutes, seconds: 0})
+    .setZone(timeZone);
+
+  // endOfDay - конец дня
+  const endOfDay = DateTime
+    .now()
+    .set({hours: 23, minutes: 59, seconds: 59})
+    .setZone(timeZone);
+
+  if (departure < now) {
+    departure = departure.plus({ minutes: frequencyMinutes });
+  }
+
+  if (departure > endOfDay) {
+    departure = departure
+      .startOf('day')
+      .plus({days: 1})
+      .set({hours: hours, minutes: minutes, seconds: 0});
+  }
+
+  while (departure < now) {
+    departure = departure.plus({ minutes: frequencyMinutes });
+
+    if (departure > endOfDay) {
+      departure = departure
+        .startOf('day')
+        .plus({days: 1})
+        .set({hours: hours, minutes: minutes, seconds: 0});
+    }
+  }
+
+  return departure;
+}
+
+
+const sendUpdatedData = async () => {
+  const buses = await loadBuses();
+
+  return buses.map((bus) => {
+    const nextDeparture = getNextDeparture(bus.firstDepartureTime, bus.frequencyMinutes);
+
+    return {
+      ...bus, nextDeparture: {
+        date: nextDeparture.toFormat("yyyy-MM-dd"),
+        // date: nextDeparture.toFormat("dd.MM.yyyy"),
+        // time: nextDeparture.toFormat("HH:mm:ss"),
+        time: nextDeparture.toFormat("HH:mm"),
+      }
+    };
+  });
+}
+
+app.get('/next-departure', async (req, res) => {
+  try {
+    const updatedBuses = await sendUpdatedData();
+    updatedBuses.sort((a, b) => {
+      const dateA = new Date(`${a.nextDeparture.date}T${a.nextDeparture.time}`);
+      const dateB = new Date(`${b.nextDeparture.date}T${b.nextDeparture.time}`);
+
+      return dateA - dateB;
+    });
+    console.table(updatedBuses);
+
+    await res.send(updatedBuses);
+  } catch (e) {
+
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`The server is started on port: ${PORT}`);
+});

@@ -1,0 +1,20 @@
+{
+  "name": "autobus",
+  "version": "1.0.0",
+  "description": "Онлайн-табло расписания автобусов",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "module",
+  "keywords": [
+    "bus"
+  ],
+  "author": "Bisquitman [lynx8309@gmail.com]",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "luxon": "^3.5.0"
+  }
+}
