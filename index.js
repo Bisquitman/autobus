@@ -90,8 +90,8 @@ app.get('/next-departure', async (req, res) => {
 
     res.json(updatedBuses);
   } catch (e) {
-    res.status(500).send({status: 500, message: e.message});
-    console.error(`Ошибка:\n${e.message}`);
+    res.status(500).send({status: 500, message: `500 "Internal server error". ${e.message}`});
+    console.error(`500 "Internal server error"\n${e.message}`);
   }
 });
 
