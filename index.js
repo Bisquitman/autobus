@@ -68,10 +68,9 @@ const sendUpdatedData = async () => {
     const nextDeparture = getNextDeparture(bus.firstDepartureTime, bus.frequencyMinutes);
 
     return {
-      ...bus, nextDeparture: {
+      ...bus,
+      nextDeparture: {
         date: nextDeparture.toFormat("yyyy-MM-dd"),
-        // date: nextDeparture.toFormat("dd.MM.yyyy"),
-        // time: nextDeparture.toFormat("HH:mm:ss"),
         time: nextDeparture.toFormat("HH:mm"),
       }
     };
@@ -89,9 +88,10 @@ app.get('/next-departure', async (req, res) => {
     });
     console.table(updatedBuses);
 
-    await res.send(updatedBuses);
+    res.json(updatedBuses);
   } catch (e) {
-    console.error(`Что-то пошло не так... Ошибка ${e}`);
+    res.status(500).send({status: 500, message: e.message});
+    console.error(`Ошибка:\n${e.message}`);
   }
 });
 
