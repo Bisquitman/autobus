@@ -91,7 +91,7 @@ app.get('/next-departure', async (req, res) => {
 
     await res.send(updatedBuses);
   } catch (e) {
-
+    console.error(`Что-то пошло не так... Ошибка ${e}`);
   }
 });
 
