@@ -80,14 +80,13 @@ const sendUpdatedData = async () => {
 
 const sortBuses = (buses) => {
   // [...buses] - такая конструкция создаёт копию массива buses
-  [...buses].sort((a, b) => {
+  return [...buses].sort((a, b) => {
     const dateA = new Date(`${a.nextDeparture.date}T${a.nextDeparture.time}`);
     const dateB = new Date(`${b.nextDeparture.date}T${b.nextDeparture.time}`);
 
     return dateA - dateB;
   });
 }
-
 
 app.get('/next-departure', async (req, res) => {
   try {
