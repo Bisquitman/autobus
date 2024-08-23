@@ -23,7 +23,6 @@ const renderBusData = (buses) => {
     const row = document.createElement("tr");
 
     const nextDepartureDateTimeUTC = new Date(`${bus.nextDeparture.date}T${bus.nextDeparture.time}Z`);
-    console.log(nextDepartureDateTimeUTC);
 
     row.innerHTML = `
       <td>${bus.busNumber}</td>
