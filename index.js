@@ -13,6 +13,8 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 const loadBuses = async () => {
   const data = await readFile(path.join(__dirname, 'buses.json'), {encoding: 'utf8'});
   return JSON.parse(data);
@@ -58,8 +60,7 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
   }
 
   return departure;
-}
-
+};
 
 const sendUpdatedData = async () => {
   const buses = await loadBuses();
@@ -75,20 +76,26 @@ const sendUpdatedData = async () => {
       }
     };
   });
+};
+
+const sortBuses = (buses) => {
+  // [...buses] - такая конструкция создаёт копию массива buses
+  [...buses].sort((a, b) => {
+    const dateA = new Date(`${a.nextDeparture.date}T${a.nextDeparture.time}`);
+    const dateB = new Date(`${b.nextDeparture.date}T${b.nextDeparture.time}`);
+
+    return dateA - dateB;
+  });
 }
+
 
 app.get('/next-departure', async (req, res) => {
   try {
     const updatedBuses = await sendUpdatedData();
-    updatedBuses.sort((a, b) => {
-      const dateA = new Date(`${a.nextDeparture.date}T${a.nextDeparture.time}`);
-      const dateB = new Date(`${b.nextDeparture.date}T${b.nextDeparture.time}`);
-
-      return dateA - dateB;
-    });
+    const sortedBuses = sortBuses(updatedBuses);
     // console.table(updatedBuses);
 
-    res.json(updatedBuses);
+    res.json(sortedBuses);
   } catch (e) {
     res.status(500).send({status: 500, message: `500 "Internal server error". ${e.message}`});
     console.error(`500 "Internal server error"\n${e.message}`);
