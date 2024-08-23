@@ -17,3 +17,5 @@
 - [Express JS](https://expressjs.com/)
 - [Talend API Tester](https://chromewebstore.google.com/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm) для Chrome
 - [Luxon](https://www.npmjs.com/package/luxon) - библиотека для работы с временем
+- Git [скачать](https://git-scm.com/)
+- [Bootstrap](https://getbootstrap.com/)
