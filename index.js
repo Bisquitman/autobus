@@ -86,7 +86,7 @@ app.get('/next-departure', async (req, res) => {
 
       return dateA - dateB;
     });
-    console.table(updatedBuses);
+    // console.table(updatedBuses);
 
     res.json(updatedBuses);
   } catch (e) {

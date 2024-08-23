@@ -4,7 +4,8 @@
   "description": "Онлайн-табло расписания автобусов",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "type": "module",
   "keywords": [
@@ -16,5 +17,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "luxon": "^3.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
