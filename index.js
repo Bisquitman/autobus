@@ -28,13 +28,13 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
   // departure - время отправки автобуса, для начала - первое (взятое из firstDepartureTime)
   let departure = DateTime
     .now()
-    .set({hours: hours, minutes: minutes, seconds: 0})
+    .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0})
     .setZone(timeZone);
 
   // endOfDay - конец дня
   const endOfDay = DateTime
     .now()
-    .set({hours: 23, minutes: 59, seconds: 59})
+    .set({hours: 23, minutes: 59, seconds: 59, milliseconds: 999})
     .setZone(timeZone);
 
   if (departure < now) {
@@ -45,7 +45,7 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
     departure = departure
       .startOf('day')
       .plus({days: 1})
-      .set({hours: hours, minutes: minutes, seconds: 0});
+      .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0});
   }
 
   while (departure < now) {
@@ -55,7 +55,7 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
       departure = departure
         .startOf('day')
         .plus({days: 1})
-        .set({hours: hours, minutes: minutes, seconds: 0});
+        .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0});
     }
   }
 
