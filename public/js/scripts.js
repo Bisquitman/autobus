@@ -21,7 +21,6 @@ const renderBusData = (buses) => {
 
   buses.forEach(bus => {
     const row = document.createElement("tr");
-
     const nextDepartureDateTimeUTC = new Date(`${bus.nextDeparture.date}T${bus.nextDeparture.time}Z`);
 
     row.innerHTML = `
@@ -33,13 +32,18 @@ const renderBusData = (buses) => {
 
     tableBody.append(row);
   });
-
-  console.log(buses);
 };
+
+const currentTime = () => {
+  const clock = document.getElementById('clock');
+  clock.textContent = new Date().toLocaleTimeString();
+  setInterval(() => clock.textContent = new Date().toLocaleTimeString(), 1000);
+}
 
 const init = async () => {
   const buses = await fetchBusData();
   renderBusData(buses);
+  currentTime();
 };
 
 init();
