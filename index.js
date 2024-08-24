@@ -38,28 +38,17 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
     .set({hours: 23, minutes: 59, seconds: 59, milliseconds: 999})
     .setZone(timeZone);
 
-  if (departure < now) {
-    departure = departure.plus({ minutes: frequencyMinutes });
-  }
-
   while (departure < now) {
     departure = departure.plus({ minutes: frequencyMinutes });
 
     if (departure > endOfDay) {
-      departure = departure
-        .startOf('day')
+      departure = DateTime
+        .now()
         .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0})
+        .plus({days: 1})
         .setZone(timeZone);
     }
   }
-
-  if (departure > endOfDay) {
-    departure = departure
-      .startOf('day')
-      .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0})
-      .setZone(timeZone);
-  }
-
   return departure;
 };
 
