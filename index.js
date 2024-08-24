@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import url from "node:url";
 import {DateTime} from 'luxon';
+import {WebSocketServer} from 'ws';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -101,6 +102,39 @@ app.get('/next-departure', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+const wss = new WebSocketServer({noServer: true});
+const clients = new Set();
+
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+  clients.add(ws);
+
+  const sendUpdates = async () => {
+    try {
+      const updatedBuses = await sendUpdatedData();
+      const sortedBuses = sortBuses(updatedBuses);
+
+      ws.send(JSON.stringify(sortedBuses));
+    } catch (e) {
+      console.error(`Error, websocket connection failed: ${e.message}`);
+    }
+  }
+
+  const intervalId = setInterval(sendUpdates, 1000);
+
+  ws.on('close', () => {
+    clearInterval(intervalId);
+    clients.delete(ws);
+    console.log('Client disconnected');
+  });
+});
+
+const server = app.listen(PORT, () => {
   console.log(`The server is started on port: ${PORT}`);
+});
+
+server.on('upgrade', (req, socket, head) => {
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit('connection', ws, req);
+  })
 });
