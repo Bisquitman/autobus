@@ -20,3 +20,4 @@
 - Git [скачать](https://git-scm.com/)
 - [Bootstrap](https://getbootstrap.com/)
 - [WebSocket](https://www.npmjs.com/package/ws)
+- Хостинг [render.com](https://render.com/)
