@@ -77,7 +77,7 @@ const sendUpdatedData = async () => {
       nextDeparture: {
         date: nextDeparture.toFormat("yyyy-MM-dd"),
         time: nextDeparture.toFormat("HH:mm:ss"),
-        remaining: timeRemaining.toFormat("HH:mm:ss"),
+        remaining: timeRemaining.toFormat("hh:mm:ss"),
       }
     };
   });
