@@ -13,7 +13,13 @@
 <div class="container">
   <div class="mb-4 d-flex align-items-center justify-content-between flex-wrap">
     <h1 class="me-4">Ближайшее отправление автобусов</h1>
-    <div id="clock" aria-label="current time"></div>
+    <div id="current-time-container" class="alert alert-primary d-flex align-items-center flex-nowrap p-2 mb-0"
+         aria-label="current time">
+        <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+        </svg>
+      <span id="clock" class="fw-bold"></span>
+    </div>
   </div>
 
   <table id="bus" class="table table-striped table-bordered">

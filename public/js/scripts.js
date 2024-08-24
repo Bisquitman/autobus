@@ -15,6 +15,12 @@ const fetchBusData = async () => {
 const formatDate = (date) => date.toISOString().split("T")[0].toString().split('-').reverse().join('.');
 const formatTime = (date) => date.toTimeString().split(" ")[0].slice(0, 5);
 
+const getTimeRemainingSeconds = (time) => {
+  const now = new Date();
+  const timeDiff = time - now;
+  return Math.floor(timeDiff / 1000);
+}
+
 const renderBusData = (buses) => {
   const tableBody = document.querySelector("#bus tbody");
   tableBody.textContent = "";
@@ -23,22 +29,26 @@ const renderBusData = (buses) => {
     const row = document.createElement("tr");
     const nextDepartureDateTimeUTC = new Date(`${bus.nextDeparture.date}T${bus.nextDeparture.time}Z`);
 
+    const remainingSeconds = getTimeRemainingSeconds(nextDepartureDateTimeUTC);
+    const remainingTimeText = remainingSeconds < 60 ? "<span style='color:red'>Отправляется</span>" : bus.nextDeparture.remaining;
+
     row.innerHTML = `
       <td>${bus.busNumber}</td>
       <td>${bus.startPoint} - ${bus.endPoint}</td>
       <td>${formatDate(nextDepartureDateTimeUTC)}</td>
       <td>${formatTime(nextDepartureDateTimeUTC)}</td>
-      <td>${bus.nextDeparture.remaining}</td>
+      <td>${remainingTimeText}</td>
     `;
 
     tableBody.append(row);
   });
 };
 
-const currentTime = () => {
-  const clock = document.getElementById('clock');
-  clock.textContent = new Date().toLocaleTimeString();
-  setInterval(() => clock.textContent = new Date().toLocaleTimeString(), 1000);
+const updateTime = () => {
+  const clockElement = document.getElementById('clock');
+  clockElement.textContent = new Date().toLocaleTimeString();
+  setTimeout(updateTime, 1000);
+  // setInterval(() => clockElement.textContent = new Date().toLocaleTimeString(), 1000);
 };
 
 const initWebSocket = () => {
@@ -66,10 +76,8 @@ const initWebSocket = () => {
 const init = async () => {
   const buses = await fetchBusData();
   renderBusData(buses);
-
   initWebSocket();
-
-  currentTime();
+  updateTime();
 };
 
 init();
