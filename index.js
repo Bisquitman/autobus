@@ -3,7 +3,7 @@ import express from 'express';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import url from "node:url";
-import {DateTime} from 'luxon';
+import {DateTime, Duration} from 'luxon';
 import {WebSocketServer} from 'ws';
 
 const __filename = url.fileURLToPath(import.meta.url);
@@ -65,15 +65,19 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
 
 const sendUpdatedData = async () => {
   const buses = await loadBuses();
+  const now = DateTime.now().setZone(timeZone);
 
   return buses.map((bus) => {
     const nextDeparture = getNextDeparture(bus.firstDepartureTime, bus.frequencyMinutes);
+
+    const timeRemaining = Duration.fromMillis(nextDeparture.diff(now).toMillis())
 
     return {
       ...bus,
       nextDeparture: {
         date: nextDeparture.toFormat("yyyy-MM-dd"),
-        time: nextDeparture.toFormat("HH:mm"),
+        time: nextDeparture.toFormat("HH:mm:ss"),
+        remaining: timeRemaining.toFormat("HH:mm:ss"),
       }
     };
   });
