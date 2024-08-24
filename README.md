@@ -19,3 +19,4 @@
 - [Luxon](https://www.npmjs.com/package/luxon) - библиотека для работы с временем
 - Git [скачать](https://git-scm.com/)
 - [Bootstrap](https://getbootstrap.com/)
+- [WebSocket](https://www.npmjs.com/package/ws)
