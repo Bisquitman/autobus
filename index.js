@@ -48,14 +48,16 @@ const getNextDeparture = (firstDepartureTime, frequencyMinutes) => {
     if (departure > endOfDay) {
       departure = departure
         .startOf('day')
-        .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0});
+        .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0})
+        .setZone(timeZone);
     }
   }
 
   if (departure > endOfDay) {
     departure = departure
       .startOf('day')
-      .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0});
+      .set({hours: hours, minutes: minutes, seconds: 0, milliseconds: 0})
+      .setZone(timeZone);
   }
 
   return departure;
